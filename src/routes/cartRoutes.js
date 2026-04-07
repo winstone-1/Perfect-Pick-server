@@ -1,65 +1,31 @@
 import express from 'express'
-import Cart from '../models/Cart.js'
-import Product from '../models/Product.js'
-import protect from '../middleware/auth.js'
+import protect from '../middleware/protect.js'
+import {
+  getCart,
+  addToCart,
+  removeCartItem,
+  updateCartItemQuantity,
+  clearCart,
+  getCartSummary
+} from '../controllers/cartController.js'
 
 const router = express.Router()
 
-// GET /api/cart
-router.get('/', protect, async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product')
-    if (!cart) return res.json({ items: [] })
-    res.json(cart)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
+// All cart routes are protected
+router.use(protect)
 
-// POST /api/cart
-router.post('/', protect, async (req, res) => {
-  try {
-    const { productId, variant, quantity } = req.body
+// Main cart routes
+router.route('/')
+  .get(getCart)
+  .post(addToCart)
+  .delete(clearCart)
 
-    const product = await Product.findById(productId)
-    if (!product) return res.status(404).json({ message: 'Product not found' })
+// Cart item routes
+router.route('/:itemId')
+  .delete(removeCartItem)
+  .put(updateCartItemQuantity)
 
-    const variantExists = product.variants.find(v => v.name === variant)
-    if (!variantExists) return res.status(400).json({ message: 'Variant not found' })
-    if (variantExists.stock < quantity) return res.status(400).json({ message: 'Insufficient stock' })
-
-    let cart = await Cart.findOne({ user: req.user._id })
-    if (!cart) cart = new Cart({ user: req.user._id, items: [] })
-
-    const existingItem = cart.items.find(
-      i => i.product.toString() === productId && i.variant === variant
-    )
-
-    if (existingItem) {
-      existingItem.quantity += quantity
-    } else {
-      cart.items.push({ product: productId, variant, quantity })
-    }
-
-    await cart.save()
-    res.json(cart)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
-
-// DELETE /api/cart/:itemId
-router.delete('/:itemId', protect, async (req, res) => {
-  try {
-    const cart = await Cart.findOne({ user: req.user._id })
-    if (!cart) return res.status(404).json({ message: 'Cart not found' })
-
-    cart.items = cart.items.filter(i => i._id.toString() !== req.params.itemId)
-    await cart.save()
-    res.json(cart)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
+// Cart summary route
+router.get('/summary', getCartSummary)
 
 export default router
