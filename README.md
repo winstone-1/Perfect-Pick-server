@@ -8,7 +8,7 @@ A RESTful API for Perfect Pick, a retail store selling bags, shoes, jewelry, and
 - **Framework:** Express.js
 - **Database:** MongoDB Atlas (Mongoose ODM)
 - **Authentication:** JWT + bcryptjs
-- **Deployment:** Koyeb
+- **Deployment:** Render
 
 ## Getting Started
 
