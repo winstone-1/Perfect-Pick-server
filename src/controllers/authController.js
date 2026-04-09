@@ -34,12 +34,13 @@ export const register = async (req, res) => {
         token: generateToken(user._id)
       }
     })
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    })
-  }
+} catch (error) {
+  console.log('REGISTER ERROR:', error) // add this
+  res.status(500).json({
+    success: false,
+    message: error.message
+  })
+}
 }
 
 // @desc    Login user

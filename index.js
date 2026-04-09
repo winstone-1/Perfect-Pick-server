@@ -30,4 +30,7 @@ app.use('/api/admin', adminRoutes)
 app.get('/', (req, res) => res.json({ message: 'API running' }))
 
 const PORT = process.env.PORT || 5000
+process.on('unhandledRejection', (err) => {
+  console.log('UNHANDLED REJECTION:', err.stack)
+})
 app.listen(PORT, () => console.log(`Server running on http://localhost: ${PORT}`))
