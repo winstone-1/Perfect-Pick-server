@@ -25,17 +25,17 @@ export const register = async (req, res) => {
     const user = await User.create({ name, email, password })
 
     res.status(201).json({
-      success: true,
-      data: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token: generateToken(user._id)
-      }
-    })
+  success: true,
+  data: {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+    role: user.role,
+    token: generateToken(user._id)
+  }
+})
 } catch (error) {
-  console.log('REGISTER ERROR:', error) // add this
   res.status(500).json({
     success: false,
     message: error.message
@@ -61,6 +61,7 @@ export const login = async (req, res) => {
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
+          role: user.role,
           token: generateToken(user._id)
         }
       })
@@ -83,15 +84,16 @@ export const login = async (req, res) => {
 // @access  Private
 export const getProfile = async (req, res) => {
   try {
-    res.json({
-      success: true,
-      data: {
-        _id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        isAdmin: req.user.isAdmin
-      }
-    })
+   res.json({
+  success: true,
+  data: {
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    isAdmin: req.user.isAdmin,
+    role: req.user.role
+  }
+})
   } catch (error) {
     res.status(500).json({
       success: false,

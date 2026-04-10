@@ -1,6 +1,6 @@
 import express from 'express'
 import protect from '../middleware/protect.js'
-import admin from '../middleware/admin.js'
+import { adminOnly, managerOrAdmin } from '../middleware/roles.js'
 import {
   createProduct,
   updateProduct,
@@ -12,19 +12,16 @@ import {
 
 const router = express.Router()
 
-// All admin routes are protected
-router.use(protect, admin)
+router.use(protect)
 
-// Products
-router.post('/products', createProduct)
-router.put('/products/:id', updateProduct)
-router.delete('/products/:id', deleteProduct)
+// Admin only
+router.post('/products', adminOnly, createProduct)
+router.put('/products/:id', adminOnly, updateProduct)
+router.delete('/products/:id', adminOnly, deleteProduct)
+router.get('/users', adminOnly, getAllUsers)
 
-// Orders
-router.get('/orders', getAllOrders)
-router.put('/orders/:id', updateOrderStatus)
-
-// Users
-router.get('/users', getAllUsers)
+// Manager or Admin
+router.get('/orders', managerOrAdmin, getAllOrders)
+router.put('/orders/:id', managerOrAdmin, updateOrderStatus)
 
 export default router
