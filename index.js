@@ -17,7 +17,13 @@ connectDB()
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: [
+    'https://perfect-pick.vercel.app',
+    'http://localhost:5173',
+  ],
+  credentials: true,
+}))
 app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
