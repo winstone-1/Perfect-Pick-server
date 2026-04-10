@@ -10,6 +10,7 @@ import productRoutes from './src/routes/productRoutes.js'
 import cartRoutes from './src/routes/cartRoutes.js'
 import orderRoutes from './src/routes/orderRoutes.js'
 import adminRoutes from './src/routes/adminRoutes.js'
+import mpesaRoutes from './src/routes/mpesaRoutes.js'
 
 dotenv.config()
 connectDB()
@@ -26,6 +27,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/mpesa', mpesaRoutes)
 
 app.get('/', (req, res) => res.json({ message: 'API running' }))
 
